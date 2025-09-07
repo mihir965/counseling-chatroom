@@ -1,87 +1,119 @@
-#include "peer.h"
+#include <stdbool.h>
+#define _GNU_SOURCE
+
+#include <sys/epoll.h>
+#include <unistd.h>
 #include <assert.h>
 #include <stdio.h>
 #include <string.h>
-#include <sys/epoll.h>
-#include <unistd.h>
+#include <stdint.h>
+#include <errno.h>
 
-/*
- * This function allows us to carefully disconnect from a peer that caused the
- * corresponding fd on server end to record an event but is not sending or
- * receiving any bytes of data, letting us know that the peer has been
- * disconnected
- */
-static void disconnect_peer(int epoll_fd, int fd, const char *reason) {
-  if (fd < 0 || fd > MAXFDS)
-    return;
-  fprintf(stderr, "disconnected fd=%d reason=%s\n", fd,
-          reason ? reason : "unknown");
-  epoll_ctl(epoll_fd, EPOLL_CTL_DEL, fd, NULL);
-  close(fd);
-  memset(&global_state[fd], 0, sizeof(global_state[fd]));
-  return;
+#include "../include/peer.h"
+
+void disconnect_peer(int epoll_fd, int fd, const char* reason){
+    if(fd<0 || fd>=MAXFDS) return;
+    fprintf(stderr, "disc fd=%d reason = %s\n", fd, reason?reason: "unknown");
+
+    // Stop watching it 
+    epoll_ctl(epoll_fd, EPOLL_CTL_DEL, fd, NULL);
+    close(fd);
+    memset(&global_state[fd], 0, sizeof(global_state[fd]));
 }
 
-fd_status_t on_peer_ready_recv(int fd, int epoll_fd) {
-  assert(fd <= MAXFDS);
-  peer_state_t *peer_state = &global_state[fd];
-  if (peer_state->state == INITIAL_ACK ||
-      peer_state->sendptr < peer_state->sendbuf_end) {
-    /*
-     * This means that the initial acknowledgement is not yet sent to the client
-     * about being connected to the server. Till this we have nothing we want to
-     * receive from the client. Also, the condition checks if all the data is
-     * staged by checking the sendptr and the sendbuf_end We return fd_status_W
-     * because the file descriptor is ready to write to the client as no
-     * acknowledgement is yet sent
-     */
-    return fd_status_W;
-  }
-  uint8_t buf[1024];
-  /*
-   * This function returns the number of bytes that the socket got from the
-   * client
-   */
-  int nbytes = recv(fd, &buf, sizeof buf, 0);
+fd_status_t peer_on_peer_connected(int sock_fd) {
+  assert(sock_fd < MAXFDS);
 
-  if (nbytes == 0) {
-    printf("The client %d disconnected from the server", fd);
-    disconnect_peer(epoll_fd, fd, "eof");
-    /*
-     * This file descriptor will be closed in the disconnect_peer method and the
-     * fd_status need not be ready to read or write
-     */
-    return fd_status_NORW;
-  }
+  peer_state_t *peer_state = &global_state[sock_fd];
+  memset(peer_state, 0, sizeof(*peer_state));
+  peer_state->state = INITIAL_ACK;
+  peer_state->sendbuf[0] = '* Please enter your username:\n';
+  peer_state->sendptr = 0;
+  peer_state->sendbuf_end = strlen(peer_state->sendbuf);
+
+  printf("Peer got connected on %d\n", sock_fd);
 
   /*
-   * This boolean variable is for when this file descriptor will be sending the
-   * staged buffer. Here we will be setting the status for this file descriptor
-   * to want_read which means that the client associated with the file
-   * descriptor wants to read from ther server, which will change the flag in
-   * the main epoll loop to EPOLLOUT
+   * The file descriptor is ready to write to the peer
    */
-  bool ready_to_send = false;
-  for (int i = 0; i < nbytes; i++) {
-    switch (peer_state->state) {
-    case INITIAL_ACK:
-      /*
-       * This is a throwaway case
-       */
-      assert(0 && "can't reach here");
-      break;
-    case WAIT_FOR_MSG:
-      if (buf[i] == '^') {
-        peer_state->state = IN_MSG;
-      }
-      break;
-    case IN_MSG:
-      if (buf[i] == '$') {
-        peer_state->state =
-            WAIT_FOR_MSG; // This is because after the end of the message, this
-                          // file descriptor will be waiting for message again
-                          // from the client
-      }
+  return fd_status_W;
+}
+
+fd_status_t peer_on_peer_connected_recv(int sock_fd, int epoll_fd){
+    assert(sock_fd <= MAXFDS);
+    peer_state_t *peer_state = &global_state[sock_fd];
+    if(peer_state->state == INITIAL_ACK || peer_state->sendptr < peer_state->sendbuf_end){
+        /*
+         * Until the intial ACK has been sent to the peer, there's nothing we want to receive. Also wait until all data staged for sending is sent to receive more data
+         */
+        return fd_status_W;
     }
-  }
+
+    uint8_t buf[1024];
+    /*
+     * Returns the amount that the listener gets from the file descriptor
+     */
+    int nbytes = recv(sock_fd, buf, sizeof(buf), 0);
+    if(nbytes == 0){
+        /*
+         * The peer disconnected
+         */
+        printf("Peer %d disconnected from the server", sock_fd);
+        disconnect_peer(epoll_fd, sock_fd, "eof");
+        return fd_status_NORW;
+    }else if(nbytes < 0){
+        if(errno == EAGAIN || errno == EWOULDBLOCK){
+            /*
+             * The socket is not ready for recv; wait till it is.
+             */
+            return fd_status_R;
+        }else{
+            perror("recv\n");
+            disconnect_peer(epoll_fd, sock_fd, "recv error");
+            return fd_status_NORW;
+        }
+    }
+    else{
+        bool ready_to_send = false;
+        for(int i=0; i<nbytes; i++){
+            switch (peer_state->state) {
+                case INITIAL_ACK:
+                    assert(0 && "can't reach here");
+                    break;
+                case WAIT_FOR_MSG:
+                    if(buf[i] == '^'){
+                        peer_state->state = IN_MSG;
+                    }
+                    break;
+                case IN_MSG:
+                    if(buf[i] == '$'){
+                        peer_state->state = WAIT_FOR_MSG;
+                        if(strlen(peer_state->user_name)==0){
+                            /*
+                             * We basically first null terminate the recv buffer. This will be the first message that the client sends, which is the username
+                             */
+                            peer_state->recvbuf[peer_state->recvbuf_end] = '\0';
+                            strncpy((char*)peer_state->user_name, (char*)peer_state->recvbuf, USER_NAME_SIZE-1);
+                            peer_state->user_name[USER_NAME_SIZE-1] = '\0';
+
+                            /*
+                             * Setting the recvbuf_end to 0 will clear the recv buffer since we will just be overwriting the buffer with new data
+                             */
+                            peer_state->recvbuf_end = 0;
+
+                            
+
+                        }
+                    }else{
+
+                        /*
+                         * We are basically accumulating all the bytes from the client into the recv buffer, which is then copied into the username or the send buf
+                         */
+                        if(peer_state->recvbuf_end <= sizeof(peer_state->recvbuf)){
+                            peer_state->recvbuf[peer_state->recvbuf_end++] = (char)buf[i];
+                        }
+                    }
+            }
+        }
+    }
 }
