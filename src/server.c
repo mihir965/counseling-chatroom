@@ -61,7 +61,7 @@ int main() {
   puts("server: waiting for connections...\n");
 
   while (1) {
-    int nready = epoll_wait(epoll_fd, &events, MAXFDS, -1);
+    int nready = epoll_wait(epoll_fd, events, MAXFDS, -1);
     for (int i = 0; i < nready; i++) {
       if (events[i].data.fd == listener_socket) {
         /*
@@ -95,29 +95,67 @@ int main() {
           fd_status_t peer_status = peer_on_peer_connected(new_peer_fd);
           struct epoll_event event = {0};
           event.data.fd = new_peer_fd;
-          if(peer_status.want_read){
-              event.events |= EPOLLIN;
+          if (peer_status.want_read) {
+            event.events |= EPOLLIN;
           }
-          if(peer_status.want_write){
-              event.events |= EPOLLOUT;
+          if (peer_status.want_write) {
+            event.events |= EPOLLOUT;
           }
-          if(epoll_ctl(epoll_fd, EPOLL_CTL_ADD, new_peer_fd, &event) < 0){
-              perror("epoll_ctl EPOLL_CTL_ADD");
-              return -1;
+          if (epoll_ctl(epoll_fd, EPOLL_CTL_ADD, new_peer_fd, &event) < 0) {
+            perror("epoll_ctl EPOLL_CTL_ADD");
+            return -1;
+          }
+        }
+      } else {
+        /*
+         * This means that another fd in the events array has recorded an event
+         */
+        /*
+         * Reading
+         */
+        if (events[i].events & EPOLLIN) {
+          int event_fd = events[i].data.fd;
+          fd_status_t fd_status =
+              peer_on_peer_connected_recv(event_fd, epoll_fd);
+          struct epoll_event event = {0};
+          event.data.fd = event_fd;
+          if (fd_status.want_read) {
+            event.events |= EPOLLIN;
+          }
+          if (fd_status.want_write) {
+            event.events |= EPOLLOUT;
+          }
+          if (event.events == 0) {
+            printf("socket %d closing\n", event_fd);
+            disconnect_peer(epoll_fd, event_fd, "no-interest");
+            continue;
+          } else if (epoll_ctl(epoll_fd, EPOLL_CTL_MOD, event_fd, &event) < 0) {
+            perror("epoll_ctl EPOLL_CTL_MOD");
+            return -1;
+          }
+        } else if (events[i].events & EPOLLOUT) {
+          int event_fd = events[i].data.fd;
+          fd_status_t fd_status =
+              peer_on_peer_connected_send(event_fd, epoll_fd);
+          struct epoll_event event = {0};
+          event.data.fd = event_fd;
+          if (fd_status.want_read) {
+            event.events |= EPOLLIN;
+          }
+          if (fd_status.want_write) {
+            event.events |= EPOLLOUT;
+          }
+          if (event.events == 0) {
+            printf("socket %d closing \n", event_fd);
+            disconnect_peer(epoll_fd, event_fd, "no-interest");
+            continue;
+          } else if (epoll_ctl(epoll_fd, EPOLL_CTL_MOD, event_fd, &event) < 0) {
+            perror("epoll_ctl EPOLL_CTL_MOD");
+            return -1;
           }
         }
       }
-      else{
-          /*
-           * This means that another fd in the events array has recorded an event 
-           */
-          /*
-           * Reading
-           */
-          if(events[i].events & EPOLLIN){
-              int event_fd = events[i].data.fd;
-          }
-      }
     }
   }
+  return -1;
 }
