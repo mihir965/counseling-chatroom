@@ -1,14 +1,16 @@
 #ifndef PEER_H_
 #define PEER_H_
 
+#include "chat_room.h"
 #include "common.h"
 #include <netinet/in.h>
 #include <stdbool.h>
 #include <stdint.h>
-typedef enum { INITIAL_ACK, WAIT_FOR_MSG, IN_MSG } ProcessingState;
+typedef enum { INITIAL_ACK, WAIT_FOR_MSG, IN_MSG, IN_CMD } ProcessingState;
 
 #define USER_NAME_SIZE 64
 #define RECVBUF_SIZE 1024
+#define MAX_ROOMS_CAN_JOIN 64
 
 typedef struct {
   ProcessingState state;
@@ -20,13 +22,14 @@ typedef struct {
   uint8_t sendbuf[SENDBUF_SIZE];
   int sendbuf_end;
   int sendptr;
+
+  room_t *rooms_joined[MAX_ROOMS_CAN_JOIN];
 } peer_state_t;
 
 typedef struct {
   bool want_read;
   bool want_write;
 } fd_status_t;
-
 
 fd_status_t peer_on_peer_connected(int sock_fd);
 

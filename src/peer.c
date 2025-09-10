@@ -10,6 +10,7 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
+#include "../include/chat_room.h"
 #include "../include/peer.h"
 
 // Constants to make fd_status_t less verbose;
@@ -46,9 +47,7 @@ fd_status_t peer_on_peer_connected(int sock_fd) {
           SENDBUF_SIZE);
   peer_state->sendbuf_end = strlen((char *)peer_state->sendbuf);
   peer_state->sendptr = 0;
-
   printf("Peer got connected on %d\n", sock_fd);
-
   /*
    * The file descriptor is ready to write to the peer
    */
@@ -101,6 +100,51 @@ fd_status_t peer_on_peer_connected_recv(int sock_fd, int epoll_fd) {
     case WAIT_FOR_MSG:
       if (buf[i] == '^') {
         peer_state->state = IN_MSG;
+      } else if (buf[i] == '@') {
+        peer_state->state = IN_CMD;
+        peer_state->recvbuf_end = 0;
+        peer_state->recvbuf[peer_state->recvbuf_end++] = '@';
+      }
+      break;
+    case IN_CMD:
+      if (buf[i] == '#') {
+        /*
+         * This means that the command is over
+         * We will compare the first 6 bytes of the recieved buffer to determine
+         * the command
+         */
+        printf("Okay IN_CMD\n");
+        peer_state->recvbuf[peer_state->recvbuf_end++] = '\0';
+        printf("recvbuf = \"%s\"\n", (char *)peer_state->recvbuf);
+        if (strncmp((char *)peer_state->recvbuf, "@JOIN", 5) == 0) {
+          /*
+           * Then we want to know the chat_room name
+           */
+          printf("The command is working\n");
+          char room_name[MAX_ROOM_NAME_SIZE];
+          int itr = 0;
+          for (int i = 6; i < peer_state->recvbuf_end; i++) {
+            room_name[itr] = peer_state->recvbuf[i];
+            itr++;
+          }
+          room_name[itr] = '\0';
+          /*
+           * Now we will have the room_name
+           */
+          room_t *room = room_find_or_create(&room_name[0]);
+          if (room_add_client_to_room(room, sock_fd)) {
+            printf("Server: Client (%d) has joined room %s", sock_fd,
+                   (char *)room_name);
+          } else {
+            printf("Server: Could not add client to room\n");
+          }
+        }
+        peer_state->recvbuf_end = 0;
+        peer_state->state = WAIT_FOR_MSG;
+      } else {
+        if (peer_state->recvbuf_end <= sizeof(peer_state->recvbuf)) {
+          peer_state->recvbuf[peer_state->recvbuf_end++] = (char)buf[i];
+        }
       }
       break;
     case IN_MSG:
@@ -126,6 +170,11 @@ fd_status_t peer_on_peer_connected_recv(int sock_fd, int epoll_fd) {
                    peer_state->user_name);
           printf("Welcome, %s!\n", peer_state->user_name);
           peer_state->sendptr = 0;
+        } else {
+          /*
+           * This is when there is an actual message or command that is not
+           * related to the username being inputted
+           */
         }
       } else {
 
