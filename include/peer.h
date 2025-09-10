@@ -23,6 +23,7 @@ typedef struct {
   int sendbuf_end;
   int sendptr;
 
+  int num_rooms_joined;
   room_t *rooms_joined[MAX_ROOMS_CAN_JOIN];
 } peer_state_t;
 

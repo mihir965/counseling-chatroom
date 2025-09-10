@@ -1,4 +1,5 @@
 #include <stdbool.h>
+#include <stdio.h>
 #include <string.h>
 #define _GNU_SOURCE
 
@@ -17,6 +18,8 @@ room_t *room_find_or_create(const char *room_name) {
         /*
          * We found the room
          */
+        printf("The room (%s) already exists!\n",
+               (char *)global_rooms[i].room_name);
         return &global_rooms[i];
       }
     }
@@ -29,7 +32,9 @@ room_t *room_find_or_create(const char *room_name) {
     new_room->num_clients = 0;
     return new_room;
   } else {
+    printf("There were no rooms!\n");
     room_t *new_room = &global_rooms[0];
+    num_rooms++;
     strncpy(new_room->room_name, room_name, MAX_ROOM_NAME_SIZE);
     new_room->room_name[MAX_ROOM_NAME_SIZE - 1] = '\0';
     new_room->num_clients = 0;

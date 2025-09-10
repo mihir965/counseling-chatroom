@@ -26,6 +26,21 @@ const fd_status_t fd_status_NORW = {.want_read = false, .want_write = false};
 // fd.
 peer_state_t global_state[MAXFDS];
 
+static inline void mod_interest(int epoll_fd, int fd, bool want_read,
+                                bool want_write) {
+  if (!want_read && !want_write) {
+    disconnect_peer(epoll_fd, fd, "no-interest");
+    return;
+  }
+  struct epoll_event ev = {0};
+  ev.data.fd = fd;
+  if (want_read)
+    ev.events |= EPOLLIN;
+  if (want_write)
+    ev.events |= EPOLLOUT;
+  epoll_ctl(epoll_fd, EPOLL_CTL_MOD, fd, &ev);
+}
+
 void disconnect_peer(int epoll_fd, int fd, const char *reason) {
   if (fd < 0 || fd >= MAXFDS)
     return;
@@ -47,6 +62,7 @@ fd_status_t peer_on_peer_connected(int sock_fd) {
           SENDBUF_SIZE);
   peer_state->sendbuf_end = strlen((char *)peer_state->sendbuf);
   peer_state->sendptr = 0;
+  peer_state->num_rooms_joined = 0;
   printf("Peer got connected on %d\n", sock_fd);
   /*
    * The file descriptor is ready to write to the peer
@@ -123,7 +139,7 @@ fd_status_t peer_on_peer_connected_recv(int sock_fd, int epoll_fd) {
           printf("The command is working\n");
           char room_name[MAX_ROOM_NAME_SIZE];
           int itr = 0;
-          for (int i = 6; i < peer_state->recvbuf_end; i++) {
+          for (int i = 5; i < peer_state->recvbuf_end; i++) {
             room_name[itr] = peer_state->recvbuf[i];
             itr++;
           }
@@ -132,9 +148,11 @@ fd_status_t peer_on_peer_connected_recv(int sock_fd, int epoll_fd) {
            * Now we will have the room_name
            */
           room_t *room = room_find_or_create(&room_name[0]);
+          printf("Got room (%s)\n", room->room_name);
           if (room_add_client_to_room(room, sock_fd)) {
-            printf("Server: Client (%d) has joined room %s", sock_fd,
+            printf("Server: Client (%d) has joined room %s..\n", sock_fd,
                    (char *)room_name);
+            peer_state->rooms_joined[peer_state->num_rooms_joined++] = room;
           } else {
             printf("Server: Could not add client to room\n");
           }
@@ -175,6 +193,52 @@ fd_status_t peer_on_peer_connected_recv(int sock_fd, int epoll_fd) {
            * This is when there is an actual message or command that is not
            * related to the username being inputted
            */
+          printf("else ran\n");
+
+          /*
+           * This is to stop peers from putting random chats
+           */
+          if (peer_state->num_rooms_joined == 0) {
+            printf("Woah\n");
+            strncpy((char*)peer_state->sendbuf, "You have not joined any rooms!\n",
+                    31);
+            return fd_status_W;
+          }
+          /*
+           * This is where we are taking just the 0th room for now and then sending to all the clients
+           */
+          room_t *room = peer_state->rooms_joined[0];
+          for (int i = 0; i < room->num_clients; i++) {
+            printf("%d\n", i);
+            int other_fd = room->client_fds[i];
+            if (sock_fd == other_fd){
+                printf("Nope\n");
+                continue;
+            }
+            peer_state_t *other = &global_state[other_fd];
+            bool was_empty = (other->sendptr >= other->sendbuf_end);
+            if (other->state == INITIAL_ACK)
+              continue;
+            size_t need = peer_state->recvbuf_end + 1;
+            if (other->sendbuf_end + need <= SENDBUF_SIZE) {
+              memcpy(&other->sendbuf[other->sendbuf_end], peer_state->recvbuf,
+                     peer_state->recvbuf_end);
+              other->sendbuf_end += peer_state->recvbuf_end;
+              other->sendbuf[other->sendbuf_end++] = '\n';
+            } else {
+              /*
+               * Backpressure policy
+               */
+              fprintf(stderr,
+                      "disc: %d is attempting to send too long "
+                      "messages...dropping\n",
+                      sock_fd);
+              disconnect_peer(epoll_fd, sock_fd, "backpressure");
+              return fd_status_NORW;
+            }
+            if (was_empty)
+              mod_interest(epoll_fd, sock_fd, true, true);
+          }
         }
       } else {
 
