@@ -1,9 +1,9 @@
-#include <stdbool.h>
-#include <stdio.h>
-#include <string.h>
 #define _GNU_SOURCE
 
 #include "../include/chat_room.h"
+#include <stdbool.h>
+#include <stdio.h>
+#include <string.h>
 
 int num_rooms = 0;
 room_t global_rooms[MAX_ROOMS];
@@ -46,15 +46,24 @@ room_t *room_find_or_create(const char *room_name) {
 bool room_add_client_to_room(room_t *room, int client_fd) {
   if (!room)
     return false;
-  room->num_clients++;
-  room->client_fds[client_fd] = client_fd;
+  for (int i = 0; i < room->num_clients; i++) {
+    if (room->client_fds[i] == client_fd)
+      return true;
+  }
+  room->client_fds[room->num_clients++] = client_fd;
   return true;
 }
 
 bool room_remove_client_from_room(room_t *room, int client_fd) {
   if (!room)
     return false;
-  room->num_clients--;
-  room->client_fds[client_fd] = 0;
-  return true;
+  int i = 0;
+  while (i <= room->num_clients) {
+    if (room->client_fds[i] == client_fd) {
+      room->client_fds[i] = 0;
+      return true;
+    }
+    i++;
+  }
+  return false;
 }

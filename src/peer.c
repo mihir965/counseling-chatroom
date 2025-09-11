@@ -116,6 +116,7 @@ fd_status_t peer_on_peer_connected_recv(int sock_fd, int epoll_fd) {
     case WAIT_FOR_MSG:
       if (buf[i] == '^') {
         peer_state->state = IN_MSG;
+        peer_state->recvbuf_end = 0;
       } else if (buf[i] == '@') {
         peer_state->state = IN_CMD;
         peer_state->recvbuf_end = 0;
@@ -160,7 +161,7 @@ fd_status_t peer_on_peer_connected_recv(int sock_fd, int epoll_fd) {
         peer_state->recvbuf_end = 0;
         peer_state->state = WAIT_FOR_MSG;
       } else {
-        if (peer_state->recvbuf_end <= sizeof(peer_state->recvbuf)) {
+        if (peer_state->recvbuf_end < sizeof(peer_state->recvbuf)) {
           peer_state->recvbuf[peer_state->recvbuf_end++] = (char)buf[i];
         }
       }
@@ -193,27 +194,29 @@ fd_status_t peer_on_peer_connected_recv(int sock_fd, int epoll_fd) {
            * This is when there is an actual message or command that is not
            * related to the username being inputted
            */
-          printf("else ran\n");
+          printf("Actual Message\n");
 
           /*
            * This is to stop peers from putting random chats
            */
           if (peer_state->num_rooms_joined == 0) {
-            printf("Woah\n");
-            strncpy((char*)peer_state->sendbuf, "You have not joined any rooms!\n",
-                    31);
+            strncpy((char *)peer_state->sendbuf,
+                    "You have not joined any rooms!\n", 31);
             return fd_status_W;
           }
           /*
-           * This is where we are taking just the 0th room for now and then sending to all the clients
+           * This is where we are taking just the 0th room for now and then
+           * sending to all the clients
            */
           room_t *room = peer_state->rooms_joined[0];
+          printf("Sending to peers in the room (%s)\n",
+                 (char *)room->room_name);
           for (int i = 0; i < room->num_clients; i++) {
             printf("%d\n", i);
             int other_fd = room->client_fds[i];
-            if (sock_fd == other_fd){
-                printf("Nope\n");
-                continue;
+            if (sock_fd == other_fd) {
+              printf("Nope\n");
+              continue;
             }
             peer_state_t *other = &global_state[other_fd];
             bool was_empty = (other->sendptr >= other->sendbuf_end);
@@ -237,17 +240,20 @@ fd_status_t peer_on_peer_connected_recv(int sock_fd, int epoll_fd) {
               return fd_status_NORW;
             }
             if (was_empty)
-              mod_interest(epoll_fd, sock_fd, true, true);
+              mod_interest(epoll_fd, other_fd, true, true);
           }
         }
+        /*
+         * Resetting the recvBuf of the fd to 0 for next messages
+         */
+        memset(&peer_state->recvbuf, 0, peer_state->recvbuf_end);
       } else {
-
         /*
          * We are basically accumulating all the bytes from the client into
          * the recv buffer, which is then copied into the username or the send
          * buf
          */
-        if (peer_state->recvbuf_end <= sizeof(peer_state->recvbuf)) {
+        if (peer_state->recvbuf_end < sizeof(peer_state->recvbuf)) {
           peer_state->recvbuf[peer_state->recvbuf_end++] = (char)buf[i];
         }
         ready_to_send = true;
