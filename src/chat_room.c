@@ -5,15 +5,15 @@
 #include <stdio.h>
 #include <string.h>
 
-int num_rooms = 0;
+int global_num_rooms = 0;
 room_t global_rooms[MAX_ROOMS];
 
 room_t *room_find_or_create(const char *room_name) {
   /*
    * First we will look for the room by comparing the room_name
    */
-  if (num_rooms != 0) {
-    for (int i = 0; i < num_rooms; i++) {
+  if (global_num_rooms != 0) {
+    for (int i = 0; i < global_num_rooms; i++) {
       if (strcmp(room_name, global_rooms[i].room_name) == 0) {
         /*
          * We found the room
@@ -26,7 +26,7 @@ room_t *room_find_or_create(const char *room_name) {
     /*
      * Once we come out of that loop that means that the room does not exist
      */
-    room_t *new_room = &global_rooms[num_rooms++];
+    room_t *new_room = &global_rooms[global_num_rooms++];
     strncpy(new_room->room_name, room_name, MAX_ROOM_NAME_SIZE);
     new_room->room_name[MAX_ROOM_NAME_SIZE - 1] = '\0';
     new_room->num_clients = 0;
@@ -34,7 +34,7 @@ room_t *room_find_or_create(const char *room_name) {
   } else {
     printf("There were no rooms!\n");
     room_t *new_room = &global_rooms[0];
-    num_rooms++;
+    global_num_rooms++;
     strncpy(new_room->room_name, room_name, MAX_ROOM_NAME_SIZE);
     new_room->room_name[MAX_ROOM_NAME_SIZE - 1] = '\0';
     new_room->num_clients = 0;

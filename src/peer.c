@@ -131,13 +131,18 @@ fd_status_t peer_on_peer_connected_recv(int sock_fd, int epoll_fd) {
          * the command
          */
         printf("Okay IN_CMD\n");
+
+        /*
+         * Adding null termination to the buffer that we recieved from the
+         * client
+         */
         peer_state->recvbuf[peer_state->recvbuf_end++] = '\0';
+
         printf("recvbuf = \"%s\"\n", (char *)peer_state->recvbuf);
         if (strncmp((char *)peer_state->recvbuf, "@JOIN", 5) == 0) {
           /*
            * Then we want to know the chat_room name
            */
-          printf("The command is working\n");
           char room_name[MAX_ROOM_NAME_SIZE];
           int itr = 0;
           for (int i = 5; i < peer_state->recvbuf_end; i++) {
@@ -157,6 +162,57 @@ fd_status_t peer_on_peer_connected_recv(int sock_fd, int epoll_fd) {
           } else {
             printf("Server: Could not add client to room\n");
           }
+        }
+        /*
+         * Adding functionality to leave a room
+         */
+        else if (strncmp((char *)peer_state->recvbuf, "@LEAVE", 6) == 0) {
+          char room_name[MAX_ROOM_NAME_SIZE];
+          int itr = 0;
+          for (int i = 6; i < peer_state->recvbuf_end; i++) {
+            room_name[itr++] = peer_state->recvbuf[i];
+          }
+          room_name[itr] = '\0';
+          /*
+           * Now remove the client from the room
+           */
+          room_t *room = room_find_or_create(&room_name[0]);
+          if (room_remove_client_from_room(room, sock_fd)) {
+            printf("Server: Client (%d) has left the room %s..\n", sock_fd,
+                   (char *)room_name);
+/*
+           * We need to iterate over all the rooms that this client had joined, get to this room and remove it from the array
+           */
+            for(int i=0; i<peer_state->num_rooms_joined; i++){
+                if(peer_state->rooms_joined[i] == room){
+                    peer_state->rooms_joined[i] = NULL;
+                    peer_state->num_rooms_joined--;
+                    break;
+                }
+            }
+            printf("Client: (%d) is now connected to (%d) rooms\n", sock_fd, peer_state->num_rooms_joined);
+          }else{
+              printf("Server: Could not remove the client from room\n");
+          }
+        }
+        /*
+         * Adding functionality to list the available rooms in the system
+         */
+        else if(strncmp((char *)peer_state->recvbuf, "@LIST", 5) == 0){
+            printf("There are (%d)\n", global_num_rooms);
+           char msg[MAX_ROOM_NAME_SIZE*64] = "";
+           for(int i=0; i<global_num_rooms; i++){
+               printf("Adding (%s)\n", (char *)global_rooms[i].room_name);
+               strncat(msg, (char*)global_rooms[i].room_name, sizeof(msg) - strlen(msg)-1);
+               strncat(msg, "\n", sizeof(msg)-strlen(msg)-1);
+           }
+           size_t msglen = strlen(msg);
+           memcpy(peer_state->sendbuf, msg, msglen);
+           peer_state->sendbuf_end = msglen;
+           peer_state->sendptr = 0;
+           peer_state->recvbuf_end = 0;
+           peer_state->state = WAIT_FOR_MSG;
+           return fd_status_W;
         }
         peer_state->recvbuf_end = 0;
         peer_state->state = WAIT_FOR_MSG;
@@ -200,9 +256,12 @@ fd_status_t peer_on_peer_connected_recv(int sock_fd, int epoll_fd) {
            * This is to stop peers from putting random chats
            */
           if (peer_state->num_rooms_joined == 0) {
-            strncpy((char *)peer_state->sendbuf,
-                    "You have not joined any rooms!\n", 31);
-            return fd_status_W;
+              const char *msg = "You have not joined any rooms!\n";
+              strncpy((char *)peer_state->sendbuf, msg, SENDBUF_SIZE-1);
+              peer_state->sendbuf[SENDBUF_SIZE-1] = '\0';
+              peer_state->sendbuf_end = strlen((char*)peer_state->sendbuf);
+              peer_state->sendptr = 0;
+              return fd_status_W;
           }
           /*
            * This is where we are taking just the 0th room for now and then

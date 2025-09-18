@@ -17,6 +17,7 @@ typedef struct {
 } room_t;
 
 extern room_t global_rooms[MAX_ROOMS]; // Global variable for the rooms
+extern int global_num_rooms;
 
 room_t *room_find_or_create(
     const char *room_name); // if a room of this name exists, or if not, either
