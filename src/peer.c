@@ -8,10 +8,10 @@
 #include <string.h>
 #include <sys/epoll.h>
 #include <sys/socket.h>
-#include <unistd.h>
-
+#include <unistd.h> 
 #include "../include/chat_room.h"
 #include "../include/peer.h"
+#include "../include/cmd.h"
 
 // Constants to make fd_status_t less verbose;
 const fd_status_t fd_status_R = {.want_read = true, .want_write = false};
@@ -143,76 +143,28 @@ fd_status_t peer_on_peer_connected_recv(int sock_fd, int epoll_fd) {
           /*
            * Then we want to know the chat_room name
            */
-          char room_name[MAX_ROOM_NAME_SIZE];
-          int itr = 0;
-          for (int i = 5; i < peer_state->recvbuf_end; i++) {
-            room_name[itr] = peer_state->recvbuf[i];
-            itr++;
-          }
-          room_name[itr] = '\0';
-          /*
-           * Now we will have the room_name
-           */
-          room_t *room = room_find_or_create(&room_name[0]);
-          printf("Got room (%s)\n", room->room_name);
-          if (room_add_client_to_room(room, sock_fd)) {
-            printf("Server: Client (%d) has joined room %s..\n", sock_fd,
-                   (char *)room_name);
-            peer_state->rooms_joined[peer_state->num_rooms_joined++] = room;
-          } else {
-            printf("Server: Could not add client to room\n");
-          }
+            cmd_join_or_create_room(peer_state, sock_fd);
         }
         /*
          * Adding functionality to leave a room
          */
         else if (strncmp((char *)peer_state->recvbuf, "@LEAVE", 6) == 0) {
-          char room_name[MAX_ROOM_NAME_SIZE];
-          int itr = 0;
-          for (int i = 6; i < peer_state->recvbuf_end; i++) {
-            room_name[itr++] = peer_state->recvbuf[i];
-          }
-          room_name[itr] = '\0';
-          /*
-           * Now remove the client from the room
-           */
-          room_t *room = room_find_or_create(&room_name[0]);
-          if (room_remove_client_from_room(room, sock_fd)) {
-            printf("Server: Client (%d) has left the room %s..\n", sock_fd,
-                   (char *)room_name);
-/*
-           * We need to iterate over all the rooms that this client had joined, get to this room and remove it from the array
-           */
-            for(int i=0; i<peer_state->num_rooms_joined; i++){
-                if(peer_state->rooms_joined[i] == room){
-                    peer_state->rooms_joined[i] = NULL;
-                    peer_state->num_rooms_joined--;
-                    break;
-                }
-            }
-            printf("Client: (%d) is now connected to (%d) rooms\n", sock_fd, peer_state->num_rooms_joined);
-          }else{
-              printf("Server: Could not remove the client from room\n");
-          }
+            cmd_leave_room(peer_state, sock_fd);
         }
         /*
          * Adding functionality to list the available rooms in the system
          */
         else if(strncmp((char *)peer_state->recvbuf, "@LIST", 5) == 0){
-            printf("There are (%d)\n", global_num_rooms);
-           char msg[MAX_ROOM_NAME_SIZE*64] = "";
-           for(int i=0; i<global_num_rooms; i++){
-               printf("Adding (%s)\n", (char *)global_rooms[i].room_name);
-               strncat(msg, (char*)global_rooms[i].room_name, sizeof(msg) - strlen(msg)-1);
-               strncat(msg, "\n", sizeof(msg)-strlen(msg)-1);
-           }
-           size_t msglen = strlen(msg);
-           memcpy(peer_state->sendbuf, msg, msglen);
-           peer_state->sendbuf_end = msglen;
-           peer_state->sendptr = 0;
-           peer_state->recvbuf_end = 0;
-           peer_state->state = WAIT_FOR_MSG;
-           return fd_status_W;
+            if(cmd_list_rooms(peer_state, sock_fd)) return fd_status_W;
+        }
+        /*
+         * This is where I will add the functions needed to talk to the AI agent
+         */
+        else if(strncmp((char*)peer_state->recvbuf, "@COUNSEL", 8) == 0){
+            /*
+             * This is the idea that I have. First let's only create a 2 user counseling agent. Therefore, the server must look if there are two messages that are associated to the command @COUNSEL that are stored in the room's counsel buffer. We will be concatenating these messages togehter and then inputting them to the counseling agent
+             */
+
         }
         peer_state->recvbuf_end = 0;
         peer_state->state = WAIT_FOR_MSG;
