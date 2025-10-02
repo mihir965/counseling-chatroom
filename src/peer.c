@@ -1,5 +1,8 @@
 #define _GNU_SOURCE
 
+#include "../include/peer.h"
+#include "../include/chat_room.h"
+#include "../include/cmd.h"
 #include <assert.h>
 #include <errno.h>
 #include <stdbool.h>
@@ -8,10 +11,7 @@
 #include <string.h>
 #include <sys/epoll.h>
 #include <sys/socket.h>
-#include <unistd.h> 
-#include "../include/chat_room.h"
-#include "../include/peer.h"
-#include "../include/cmd.h"
+#include <unistd.h>
 
 // Constants to make fd_status_t less verbose;
 const fd_status_t fd_status_R = {.want_read = true, .want_write = false};
@@ -143,28 +143,32 @@ fd_status_t peer_on_peer_connected_recv(int sock_fd, int epoll_fd) {
           /*
            * Then we want to know the chat_room name
            */
-            cmd_join_or_create_room(peer_state, sock_fd);
+          cmd_join_or_create_room(peer_state, sock_fd);
         }
         /*
          * Adding functionality to leave a room
          */
         else if (strncmp((char *)peer_state->recvbuf, "@LEAVE", 6) == 0) {
-            cmd_leave_room(peer_state, sock_fd);
+          cmd_leave_room(peer_state, sock_fd);
         }
         /*
          * Adding functionality to list the available rooms in the system
          */
-        else if(strncmp((char *)peer_state->recvbuf, "@LIST", 5) == 0){
-            if(cmd_list_rooms(peer_state, sock_fd)) return fd_status_W;
+        else if (strncmp((char *)peer_state->recvbuf, "@LIST", 5) == 0) {
+          if (cmd_list_rooms(peer_state, sock_fd))
+            return fd_status_W;
         }
         /*
          * This is where I will add the functions needed to talk to the AI agent
          */
-        else if(strncmp((char*)peer_state->recvbuf, "@COUNSEL", 8) == 0){
-            /*
-             * This is the idea that I have. First let's only create a 2 user counseling agent. Therefore, the server must look if there are two messages that are associated to the command @COUNSEL that are stored in the room's counsel buffer. We will be concatenating these messages togehter and then inputting them to the counseling agent
-             */
-
+        else if (strncmp((char *)peer_state->recvbuf, "@COUNSEL", 8) == 0) {
+          /*
+           * This is the idea that I have. First let's only create a 2 user
+           * counseling agent. Therefore, the server must look if there are two
+           * messages that are associated to the command @COUNSEL that are
+           * stored in the room's counsel buffer. We will be concatenating these
+           * messages togehter and then inputting them to the counseling agent
+           */
         }
         peer_state->recvbuf_end = 0;
         peer_state->state = WAIT_FOR_MSG;
@@ -208,12 +212,12 @@ fd_status_t peer_on_peer_connected_recv(int sock_fd, int epoll_fd) {
            * This is to stop peers from putting random chats
            */
           if (peer_state->num_rooms_joined == 0) {
-              const char *msg = "You have not joined any rooms!\n";
-              strncpy((char *)peer_state->sendbuf, msg, SENDBUF_SIZE-1);
-              peer_state->sendbuf[SENDBUF_SIZE-1] = '\0';
-              peer_state->sendbuf_end = strlen((char*)peer_state->sendbuf);
-              peer_state->sendptr = 0;
-              return fd_status_W;
+            const char *msg = "You have not joined any rooms!\n";
+            strncpy((char *)peer_state->sendbuf, msg, SENDBUF_SIZE - 1);
+            peer_state->sendbuf[SENDBUF_SIZE - 1] = '\0';
+            peer_state->sendbuf_end = strlen((char *)peer_state->sendbuf);
+            peer_state->sendptr = 0;
+            return fd_status_W;
           }
           /*
            * This is where we are taking just the 0th room for now and then

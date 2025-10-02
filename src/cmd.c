@@ -12,7 +12,10 @@ void cmd_join_or_create_room(peer_state_t *peer_state, int sock_fd) {
   }
   room_name[itr] = '\0';
   /*
-   * Now we will have the room_name
+   * Now we will have the room_name. This will go through the entire logic of
+   * creating the ai_agent using pthread and then returns the newly created room
+   * with the agent. Users are only added after this, therefore, no need to
+   * protect the room's client_fds from concurrency issues from threading
    */
   room_t *room = room_find_or_create(&room_name[0]);
   printf("Got room (%s)\n", room->room_name);

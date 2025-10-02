@@ -12,6 +12,7 @@ PORT = 8080
 @app.route("/get_agent")
 def get_agent():
     room_name = request.args.get("room")
+    agent_name = f"ai_agent_{room_name}"
     if not room_name:
         return "Missing room_name", 400
 
@@ -55,7 +56,10 @@ def get_agent():
 
     # Run the connection logic on a separate thread since the connect call is blocking and the c server is already blocking with the curl_easy function
     threading.Thread(target=connect_to_c_server, daemon=True).start()
-    return "Agent creation triggered", 200
+    data = {
+        "agent_name": agent_name
+    }
+    return data, 200
 
 
 if __name__ == "__main__":

@@ -27,6 +27,13 @@ typedef struct {
   room_t *rooms_joined[MAX_ROOMS_CAN_JOIN];
 } peer_state_t;
 
+// Each peer is globally identified by the fd it is connected on. As long as a
+// peer is connected, the fd is unique to it. When a peer disconnects, a new
+// peer may connect and get the same fd. The function on_peer_connected should
+// initialize the state properly to remove the trace of the old peer on the same
+// fd.
+extern peer_state_t global_state[MAXFDS];
+
 typedef struct {
   bool want_read;
   bool want_write;
