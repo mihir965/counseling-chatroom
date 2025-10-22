@@ -3,6 +3,7 @@
 #include "../include/peer.h"
 #include "../include/chat_room.h"
 #include "../include/cmd.h"
+#include "../include/utils.h"
 #include <assert.h>
 #include <errno.h>
 #include <stdbool.h>
@@ -183,6 +184,24 @@ fd_status_t peer_on_peer_connected_recv(int sock_fd, int epoll_fd) {
         printf("This ran\n");
         peer_state->state = WAIT_FOR_MSG;
         if (strlen((char *)peer_state->user_name) == 0) {
+
+            char *agent_name = strtok(peer_state->user_name, "|");
+            char *uuid = strtok(NULL, "|");
+
+            if(agent_name && uuid && strncmp(agent_name, "ai_agent_", 9) == 0){
+                if(find_and_assign_agent(uuid, sock_fd)){
+                    printf("(%s) was assigned to room\n", agent_name);
+                }
+                else{
+                    printf("Was not able to fetch the room, please do not include ai_agent_ at the start of your username\n");
+                    strncpy((char *)peer_state->sendbuf, "Please enter your username:\n",
+          SENDBUF_SIZE);
+                    peer_state->sendbuf_end = strlen((char *)peer_state->sendbuf);
+                    peer_state->sendptr = 0;
+                    return fd_status_W;
+                }
+            }
+
           /*
            * We basically first null terminate the recv buffer. This will be
            * the first message that the client sends, which is the username

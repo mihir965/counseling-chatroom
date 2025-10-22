@@ -2,11 +2,13 @@
 #define CHAT_ROOM_H_
 
 #include "common.h"
+#include "uthash.h"
 #include <stdbool.h>
 
 #define MAX_ROOM_NAME_SIZE 64
 #define MAX_ROOM_CLIENTS 32
 #define MAX_ROOMS 64
+#define UUID_LEN 8
 
 
 typedef struct {
@@ -36,5 +38,6 @@ struct agent_assign_args {
     room_t *room;
     char* agent_name;
 };
+
 
 #endif // !CHAT_ROOM_H_

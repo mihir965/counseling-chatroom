@@ -26,7 +26,7 @@ static size_t WriteMemoryCallback(void *contents, size_t size, size_t nmemb,
   return realsize;
 }
 
-char *comms_connect_agent(const char *room_name) {
+char *comms_connect_agent(const char *room_name, const char *uuid_str) {
   printf("Making curl request\n");
   CURL *curl;
   CURLcode res;
@@ -35,8 +35,8 @@ char *comms_connect_agent(const char *room_name) {
    * Construct the url for the python server that will serve the ai_agent
    */
   char url[256];
-  snprintf(url, sizeof url, "http://127.0.0.1:5000/get_agent?room=%s",
-           room_name);
+  snprintf(url, sizeof url, "http://127.0.0.1:5000/get_agent?room=%s?uuid=%s",
+           room_name, uuid_str);
 
   /*
    * Let's now make the data structure that will store metadata related to the

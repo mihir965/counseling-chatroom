@@ -11,6 +11,13 @@
 #include "../include/common.h"
 #include "../include/peer.h"
 #include "../include/sockets.h"
+#include "../include/utils.h"
+
+/*
+ * Making a global state for the hash_map used different things
+ */
+token_map *map = NULL;
+
 int main() {
   /*
    * First get the listener socket
@@ -58,7 +65,11 @@ int main() {
     return -1;
   }
 
+  
+
   puts("server: waiting for connections...\n");
+
+  
 
   while (1) {
     int nready = epoll_wait(epoll_fd, events, MAXFDS, -1);

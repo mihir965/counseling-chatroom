@@ -18,7 +18,7 @@ BINARY = chat_server
 all: $(BINARY)
 
 $(BINARY): $(OBJECTS)
-	$(CC) $(CFLAGS) -o $@ $^ -lcurl -lcjson
+	$(CC) $(CFLAGS) -o $@ $^ -lcurl -lcjson -luuid
 
 $(BUILDDIR)/%.o: $(SRCDIR)/%.c
 	@mkdir -p $(BUILDDIR)

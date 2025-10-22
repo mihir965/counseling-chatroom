@@ -12,6 +12,7 @@ PORT = 8080
 @app.route("/get_agent")
 def get_agent():
     room_name = request.args.get("room")
+    uuid = request.args.get("uuid")
     agent_name = f"ai_agent_{room_name}"
     if not room_name:
         return "Missing room_name", 400
@@ -34,13 +35,14 @@ def get_agent():
 
                     if (msg == "Please enter your username:"):
                         print(f"[AGENT-{room_name}] Sending username...")
-                        username = f"^ai_agent_{room_name}$"
+                        username = f"^ai_agent_{room_name}|{uuid}$"
                         s.sendall(username.encode('utf-8'))
                         query = f"@JOIN{room_name}#"
                         time.sleep(1.5)
                         s.sendall(query.encode('utf-8'))
                         just_joined = True
                         continue
+
                     if just_joined:
                         print(
                             f"[AGENT-{room_name}] Sending initial test message")
