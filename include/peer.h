@@ -47,4 +47,6 @@ fd_status_t peer_on_peer_connected_send(int sock_fd, int epoll_fd);
 
 void disconnect_peer(int epoll_fd, int fd, const char *reason);
 
+void mod_interest(int epoll_fd, int fd, bool want_read, bool want_write);
+
 #endif // !PEER_H_

@@ -27,8 +27,7 @@ const fd_status_t fd_status_NORW = {.want_read = false, .want_write = false};
 // fd.
 peer_state_t global_state[MAXFDS];
 
-static inline void mod_interest(int epoll_fd, int fd, bool want_read,
-                                bool want_write) {
+void mod_interest(int epoll_fd, int fd, bool want_read, bool want_write) {
   if (!want_read && !want_write) {
     disconnect_peer(epoll_fd, fd, "no-interest");
     return;
@@ -170,6 +169,10 @@ fd_status_t peer_on_peer_connected_recv(int sock_fd, int epoll_fd) {
            * stored in the room's counsel buffer. We will be concatenating these
            * messages togehter and then inputting them to the counseling agent
            */
+          if (strncmp((char *)peer_state->recvbuf, "@COUNSEL", 8) == 0) {
+            /* This means that we got a counsel command */
+            cmd_ask_for_counseling(peer_state, sock_fd, epoll_fd);
+          }
         }
         peer_state->recvbuf_end = 0;
         peer_state->state = WAIT_FOR_MSG;
@@ -181,44 +184,42 @@ fd_status_t peer_on_peer_connected_recv(int sock_fd, int epoll_fd) {
       break;
     case IN_MSG:
       if (buf[i] == '$') {
-        printf("This ran\n");
+        printf("IN_MSG\n");
         peer_state->state = WAIT_FOR_MSG;
         if (strlen((char *)peer_state->user_name) == 0) {
 
-            char *agent_name = strtok(peer_state->user_name, "|");
-            char *uuid = strtok(NULL, "|");
+            peer_state->recvbuf[peer_state->recvbuf_end] = '\0';
 
-            if(agent_name && uuid && strncmp(agent_name, "ai_agent_", 9) == 0){
-                if(find_and_assign_agent(uuid, sock_fd)){
-                    printf("(%s) was assigned to room\n", agent_name);
-                }
-                else{
-                    printf("Was not able to fetch the room, please do not include ai_agent_ at the start of your username\n");
-                    strncpy((char *)peer_state->sendbuf, "Please enter your username:\n",
-          SENDBUF_SIZE);
-                    peer_state->sendbuf_end = strlen((char *)peer_state->sendbuf);
-                    peer_state->sendptr = 0;
-                    return fd_status_W;
-                }
+            /* Make a copy to parse since strtok modifies the string */
+            char temp[USER_NAME_SIZE];
+            strncpy(temp, (char*)peer_state->recvbuf, USER_NAME_SIZE-1);
+            temp[USER_NAME_SIZE-1] = '\0';
+
+            char* agent_name = strtok(temp, "|");
+            char* uuid = strtok(NULL, "|");
+
+          if (agent_name && uuid && strncmp(agent_name, "ai_agent_", 9) == 0) {
+              printf("RANNNNNNNNNNNN\n");
+            if (find_and_assign_agent(uuid, sock_fd)) {
+              printf("(%s) was assigned to room\n", agent_name);
+            } else {
+              printf("Was not able to fetch the room, please do not include "
+                     "ai_agent_ at the start of your username\n");
+              strncpy((char *)peer_state->sendbuf,
+                      "Please enter your username:\n", SENDBUF_SIZE);
+              peer_state->sendbuf_end = strlen((char *)peer_state->sendbuf);
+              peer_state->sendptr = 0;
+              return fd_status_W;
             }
+          }
 
-          /*
-           * We basically first null terminate the recv buffer. This will be
-           * the first message that the client sends, which is the username
-           */
-          peer_state->recvbuf[peer_state->recvbuf_end] = '\0';
-          strncpy((char *)peer_state->user_name, (char *)peer_state->recvbuf,
-                  USER_NAME_SIZE - 1);
-          peer_state->user_name[USER_NAME_SIZE - 1] = '\0';
+          /* Now save the username */
+          strncpy((char*)peer_state->user_name, (char*)peer_state->recvbuf, USER_NAME_SIZE-1);
+          peer_state->user_name[USER_NAME_SIZE-1] = '\0';
 
-          /*
-           * Setting the recvbuf_end to 0 will clear the recv buffer since we
-           * will just be overwriting the buffer with new data
-           */
           peer_state->recvbuf_end = 0;
-          snprintf((char *)peer_state->sendbuf, SENDBUF_SIZE, "Welcome, %s!\n",
-                   peer_state->user_name);
-          printf("Welcome, %s!\n", peer_state->user_name);
+          snprintf((char*)peer_state->sendbuf, SENDBUF_SIZE, "Welcome, %s!\n", peer_state->user_name);
+          printf("Welcome, %s\n", peer_state->user_name);
           peer_state->sendptr = 0;
         } else {
           /*
