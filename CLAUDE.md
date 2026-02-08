@@ -4,9 +4,64 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 # Couples Counseling Chat Server
 
-## Project Goal
+## Project Vision & End Goals
 
-Build a feature-rich, production-quality chat server with AI counseling integration while learning modern C++20. Start from a working-but-basic C implementation and evolve it into something truly useful that can be deployed for real users.
+**This is a portfolio project intended for production deployment and recruiting visibility.**
+
+### Ultimate Goals
+
+1. **Portfolio/Recruiting Tool**
+   - Hosted on personal domain for recruiters to see and test
+   - Demonstrates low-level systems programming (C++20, networking, epoll)
+   - Shows production engineering skills (TLS, monitoring, deployment)
+   - GitHub repo with excellent documentation
+
+2. **Production-Ready Chat Server**
+   - WebSocket + TLS for secure communication
+   - JSON-based protocol (modern, extensible)
+   - Authentication & authorization (JWT)
+   - SQLite persistence (message history, user data)
+   - Prometheus metrics & logging
+   - Docker deployment with docker-compose
+
+3. **User-Provided AI Integration**
+   - Users bring their own API keys (OpenAI, Anthropic, local models)
+   - Server provides framework and protocol
+   - Support multiple LLM providers through adapters
+   - Configurable system prompts per user
+
+4. **Dual Client Support**
+   - **Terminal Client (TUI)**: Rich terminal interface using FTXUI
+     - Colors, layouts, keyboard shortcuts
+     - "Claude Code"-like aesthetic
+     - Works over SSH
+   - **Web Client**: Browser-based (React/Vue)
+     - Mobile-friendly
+     - Easier for non-technical users
+
+### Why This Will Impress
+
+- **Systems Programming**: C++20, socket programming, epoll event loop
+- **Networking**: TCP, WebSocket, TLS, protocol design
+- **TUI Programming**: Terminal UI with FTXUI (unique skill)
+- **Production Engineering**: Monitoring, logging, deployment, security
+- **Full Stack**: Backend + TUI client + web client + deployment
+- **AI Integration**: Timely, shows ability to work with LLMs
+- **Actually Deployed**: Not localhost - real production environment
+
+### Incremental Development Strategy
+
+Start from working C implementation → Modern C++ components → Better protocol → Production features → Deployment
+
+Don't try to build everything at once. Each component should work and be testable before moving to the next.
+
+---
+
+## Current Development Phase
+
+**Building Core C++ Components**
+
+Starting from a basic C implementation, rewriting in modern C++20 with production quality from the start.
 
 **Philosophy**: Learn by building, pattern recognition, and gradual feature addition. Not trying to be novel, but to understand how real systems work by implementing proven patterns.
 
@@ -39,11 +94,75 @@ Build a feature-rich, production-quality chat server with AI counseling integrat
 
 ## Architecture Overview
 
+### Current Architecture (C Implementation)
+
 ```
-[Clients] ←TCP:8080→ [C++ Server] ←HTTP→ [Python Flask:5000] ←API→ [Anthropic Claude]
-                           ↓
-                    [AI Agent Sockets]
+[Clients] ←TCP:8080→ [C Server] ←HTTP→ [Python Flask:5000] ←API→ [Anthropic Claude]
+                          ↓
+                   [AI Agent Sockets]
 ```
+
+### Target Architecture (Production)
+
+```
+┌─────────────────────────────────────────────────┐
+│                  CLIENTS                        │
+├─────────────────────────────────────────────────┤
+│  Terminal Client (C++ TUI with FTXUI)          │
+│  • Rich terminal interface, colors, layouts     │
+│  • Keyboard shortcuts, scrollback              │
+│  • Works over SSH                               │
+│                                                  │
+│  Web Client (Browser-based)                     │
+│  • React/Vue frontend                           │
+│  • Mobile-friendly responsive design           │
+└─────────────────────────────────────────────────┘
+                    ↓
+            [WebSocket + TLS]
+                    ↓
+┌─────────────────────────────────────────────────┐
+│         C++ Chat Server (Production)            │
+├─────────────────────────────────────────────────┤
+│  • Modern C++20 with RAII, move semantics      │
+│  • epoll event loop (async I/O)                │
+│  • WebSocket protocol support                   │
+│  • TLS/SSL (Let's Encrypt)                     │
+│  • JSON-based message protocol                  │
+│  • JWT authentication                           │
+│  • SQLite persistence                           │
+│  • Prometheus metrics endpoint                  │
+│  • Structured logging (spdlog)                  │
+│  • Configuration file (YAML)                    │
+└─────────────────────────────────────────────────┘
+                    ↓
+        [AI Provider Interface/Adapters]
+        ├─ Anthropic Claude adapter
+        ├─ OpenAI GPT adapter
+        ├─ Local LLaMA adapter
+        └─ Custom webhook adapter
+                    ↓
+        [User's AI Provider]
+        (User provides API key)
+```
+
+### Protocol Evolution
+
+**Current (C):** Custom text protocol `@JOIN<room>#`
+- Inflexible, hard to extend
+- Not browser-friendly
+- No standardization
+
+**Target (C++):** JSON over WebSocket
+```json
+{
+  "type": "join",
+  "room": "therapy_session_1",
+  "timestamp": "2026-02-06T10:30:00Z"
+}
+```
+- Extensible, self-documenting
+- WebSocket-native (works in browsers)
+- Easy to version and evolve
 
 ### Current C Code Structure
 - **server.c** - Main epoll event loop
