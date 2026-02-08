@@ -1,0 +1,1 @@
+/usr/bin/c++ -g -Wl,--dependency-file=CMakeFiles/counsel_server_cpp.dir/link.d CMakeFiles/counsel_server_cpp.dir/cpp_src/main.cpp.o -o counsel_server_cpp  libsockets_cpp.a

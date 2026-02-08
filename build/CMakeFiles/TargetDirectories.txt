@@ -1,0 +1,4 @@
+/home/mihir/Documents/Developer/counseling-chatroom/build/CMakeFiles/sockets_cpp.dir
+/home/mihir/Documents/Developer/counseling-chatroom/build/CMakeFiles/counsel_server_cpp.dir
+/home/mihir/Documents/Developer/counseling-chatroom/build/CMakeFiles/edit_cache.dir
+/home/mihir/Documents/Developer/counseling-chatroom/build/CMakeFiles/rebuild_cache.dir
