@@ -57,10 +57,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/mihir/Documents/Developer/counseling-chatroom
+CMAKE_SOURCE_DIR = /home/mihir965/Documents/Developer/counseling-chatroom
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/mihir/Documents/Developer/counseling-chatroom/build
+CMAKE_BINARY_DIR = /home/mihir965/Documents/Developer/counseling-chatroom/build
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -87,9 +87,9 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/mihir/Documents/Developer/counseling-chatroom/build/CMakeFiles /home/mihir/Documents/Developer/counseling-chatroom/build//CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/mihir965/Documents/Developer/counseling-chatroom/build/CMakeFiles /home/mihir965/Documents/Developer/counseling-chatroom/build//CMakeFiles/progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/mihir/Documents/Developer/counseling-chatroom/build/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/mihir965/Documents/Developer/counseling-chatroom/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -141,6 +141,30 @@ counsel_server_cpp: cmake_check_build_system
 counsel_server_cpp/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/counsel_server_cpp.dir/build.make CMakeFiles/counsel_server_cpp.dir/build
 .PHONY : counsel_server_cpp/fast
+
+cpp_src/buffer.o: cpp_src/buffer.cpp.o
+.PHONY : cpp_src/buffer.o
+
+# target to build an object file
+cpp_src/buffer.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sockets_cpp.dir/build.make CMakeFiles/sockets_cpp.dir/cpp_src/buffer.cpp.o
+.PHONY : cpp_src/buffer.cpp.o
+
+cpp_src/buffer.i: cpp_src/buffer.cpp.i
+.PHONY : cpp_src/buffer.i
+
+# target to preprocess a source file
+cpp_src/buffer.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sockets_cpp.dir/build.make CMakeFiles/sockets_cpp.dir/cpp_src/buffer.cpp.i
+.PHONY : cpp_src/buffer.cpp.i
+
+cpp_src/buffer.s: cpp_src/buffer.cpp.s
+.PHONY : cpp_src/buffer.s
+
+# target to generate assembly for a file
+cpp_src/buffer.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sockets_cpp.dir/build.make CMakeFiles/sockets_cpp.dir/cpp_src/buffer.cpp.s
+.PHONY : cpp_src/buffer.cpp.s
 
 cpp_src/main.o: cpp_src/main.cpp.o
 .PHONY : cpp_src/main.o
@@ -224,6 +248,9 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... counsel_server_cpp"
 	@echo "... sockets_cpp"
+	@echo "... cpp_src/buffer.o"
+	@echo "... cpp_src/buffer.i"
+	@echo "... cpp_src/buffer.s"
 	@echo "... cpp_src/main.o"
 	@echo "... cpp_src/main.i"
 	@echo "... cpp_src/main.s"

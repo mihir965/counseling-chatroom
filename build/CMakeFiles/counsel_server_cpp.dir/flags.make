@@ -4,7 +4,7 @@
 # compile CXX with /usr/bin/c++
 CXX_DEFINES = 
 
-CXX_INCLUDES = -I/home/mihir/Documents/Developer/counseling-chatroom/cpp_include
+CXX_INCLUDES = -I/home/mihir965/Documents/Developer/counseling-chatroom/cpp_include
 
 CXX_FLAGS = -g -std=c++20 -Wall -Wextra -Wpedantic
 

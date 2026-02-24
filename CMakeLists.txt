@@ -18,6 +18,7 @@ include_directories(${CMAKE_SOURCE_DIR}/cpp_include)
 add_library(sockets_cpp
     cpp_src/socket.cpp
     cpp_src/server_utils.cpp
+    cpp_src/buffer.cpp
 )
 
 # Main server executable (for now, just a test)

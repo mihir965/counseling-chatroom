@@ -1,2 +1,2 @@
-/usr/bin/ar qc libsockets_cpp.a CMakeFiles/sockets_cpp.dir/cpp_src/socket.cpp.o CMakeFiles/sockets_cpp.dir/cpp_src/server_utils.cpp.o
+/usr/bin/ar qc libsockets_cpp.a CMakeFiles/sockets_cpp.dir/cpp_src/socket.cpp.o CMakeFiles/sockets_cpp.dir/cpp_src/server_utils.cpp.o CMakeFiles/sockets_cpp.dir/cpp_src/buffer.cpp.o
 /usr/bin/ranlib libsockets_cpp.a

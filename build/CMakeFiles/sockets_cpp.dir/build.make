@@ -53,10 +53,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/mihir/Documents/Developer/counseling-chatroom
+CMAKE_SOURCE_DIR = /home/mihir965/Documents/Developer/counseling-chatroom
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/mihir/Documents/Developer/counseling-chatroom/build
+CMAKE_BINARY_DIR = /home/mihir965/Documents/Developer/counseling-chatroom/build
 
 # Include any dependencies generated for this target.
 include CMakeFiles/sockets_cpp.dir/depend.make
@@ -73,46 +73,62 @@ CMakeFiles/sockets_cpp.dir/codegen:
 .PHONY : CMakeFiles/sockets_cpp.dir/codegen
 
 CMakeFiles/sockets_cpp.dir/cpp_src/socket.cpp.o: CMakeFiles/sockets_cpp.dir/flags.make
-CMakeFiles/sockets_cpp.dir/cpp_src/socket.cpp.o: /home/mihir/Documents/Developer/counseling-chatroom/cpp_src/socket.cpp
+CMakeFiles/sockets_cpp.dir/cpp_src/socket.cpp.o: /home/mihir965/Documents/Developer/counseling-chatroom/cpp_src/socket.cpp
 CMakeFiles/sockets_cpp.dir/cpp_src/socket.cpp.o: CMakeFiles/sockets_cpp.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/mihir/Documents/Developer/counseling-chatroom/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/sockets_cpp.dir/cpp_src/socket.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/sockets_cpp.dir/cpp_src/socket.cpp.o -MF CMakeFiles/sockets_cpp.dir/cpp_src/socket.cpp.o.d -o CMakeFiles/sockets_cpp.dir/cpp_src/socket.cpp.o -c /home/mihir/Documents/Developer/counseling-chatroom/cpp_src/socket.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/mihir965/Documents/Developer/counseling-chatroom/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/sockets_cpp.dir/cpp_src/socket.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/sockets_cpp.dir/cpp_src/socket.cpp.o -MF CMakeFiles/sockets_cpp.dir/cpp_src/socket.cpp.o.d -o CMakeFiles/sockets_cpp.dir/cpp_src/socket.cpp.o -c /home/mihir965/Documents/Developer/counseling-chatroom/cpp_src/socket.cpp
 
 CMakeFiles/sockets_cpp.dir/cpp_src/socket.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/sockets_cpp.dir/cpp_src/socket.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/mihir/Documents/Developer/counseling-chatroom/cpp_src/socket.cpp > CMakeFiles/sockets_cpp.dir/cpp_src/socket.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/mihir965/Documents/Developer/counseling-chatroom/cpp_src/socket.cpp > CMakeFiles/sockets_cpp.dir/cpp_src/socket.cpp.i
 
 CMakeFiles/sockets_cpp.dir/cpp_src/socket.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/sockets_cpp.dir/cpp_src/socket.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/mihir/Documents/Developer/counseling-chatroom/cpp_src/socket.cpp -o CMakeFiles/sockets_cpp.dir/cpp_src/socket.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/mihir965/Documents/Developer/counseling-chatroom/cpp_src/socket.cpp -o CMakeFiles/sockets_cpp.dir/cpp_src/socket.cpp.s
 
 CMakeFiles/sockets_cpp.dir/cpp_src/server_utils.cpp.o: CMakeFiles/sockets_cpp.dir/flags.make
-CMakeFiles/sockets_cpp.dir/cpp_src/server_utils.cpp.o: /home/mihir/Documents/Developer/counseling-chatroom/cpp_src/server_utils.cpp
+CMakeFiles/sockets_cpp.dir/cpp_src/server_utils.cpp.o: /home/mihir965/Documents/Developer/counseling-chatroom/cpp_src/server_utils.cpp
 CMakeFiles/sockets_cpp.dir/cpp_src/server_utils.cpp.o: CMakeFiles/sockets_cpp.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/mihir/Documents/Developer/counseling-chatroom/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/sockets_cpp.dir/cpp_src/server_utils.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/sockets_cpp.dir/cpp_src/server_utils.cpp.o -MF CMakeFiles/sockets_cpp.dir/cpp_src/server_utils.cpp.o.d -o CMakeFiles/sockets_cpp.dir/cpp_src/server_utils.cpp.o -c /home/mihir/Documents/Developer/counseling-chatroom/cpp_src/server_utils.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/mihir965/Documents/Developer/counseling-chatroom/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/sockets_cpp.dir/cpp_src/server_utils.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/sockets_cpp.dir/cpp_src/server_utils.cpp.o -MF CMakeFiles/sockets_cpp.dir/cpp_src/server_utils.cpp.o.d -o CMakeFiles/sockets_cpp.dir/cpp_src/server_utils.cpp.o -c /home/mihir965/Documents/Developer/counseling-chatroom/cpp_src/server_utils.cpp
 
 CMakeFiles/sockets_cpp.dir/cpp_src/server_utils.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/sockets_cpp.dir/cpp_src/server_utils.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/mihir/Documents/Developer/counseling-chatroom/cpp_src/server_utils.cpp > CMakeFiles/sockets_cpp.dir/cpp_src/server_utils.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/mihir965/Documents/Developer/counseling-chatroom/cpp_src/server_utils.cpp > CMakeFiles/sockets_cpp.dir/cpp_src/server_utils.cpp.i
 
 CMakeFiles/sockets_cpp.dir/cpp_src/server_utils.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/sockets_cpp.dir/cpp_src/server_utils.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/mihir/Documents/Developer/counseling-chatroom/cpp_src/server_utils.cpp -o CMakeFiles/sockets_cpp.dir/cpp_src/server_utils.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/mihir965/Documents/Developer/counseling-chatroom/cpp_src/server_utils.cpp -o CMakeFiles/sockets_cpp.dir/cpp_src/server_utils.cpp.s
+
+CMakeFiles/sockets_cpp.dir/cpp_src/buffer.cpp.o: CMakeFiles/sockets_cpp.dir/flags.make
+CMakeFiles/sockets_cpp.dir/cpp_src/buffer.cpp.o: /home/mihir965/Documents/Developer/counseling-chatroom/cpp_src/buffer.cpp
+CMakeFiles/sockets_cpp.dir/cpp_src/buffer.cpp.o: CMakeFiles/sockets_cpp.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/mihir965/Documents/Developer/counseling-chatroom/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/sockets_cpp.dir/cpp_src/buffer.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/sockets_cpp.dir/cpp_src/buffer.cpp.o -MF CMakeFiles/sockets_cpp.dir/cpp_src/buffer.cpp.o.d -o CMakeFiles/sockets_cpp.dir/cpp_src/buffer.cpp.o -c /home/mihir965/Documents/Developer/counseling-chatroom/cpp_src/buffer.cpp
+
+CMakeFiles/sockets_cpp.dir/cpp_src/buffer.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/sockets_cpp.dir/cpp_src/buffer.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/mihir965/Documents/Developer/counseling-chatroom/cpp_src/buffer.cpp > CMakeFiles/sockets_cpp.dir/cpp_src/buffer.cpp.i
+
+CMakeFiles/sockets_cpp.dir/cpp_src/buffer.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/sockets_cpp.dir/cpp_src/buffer.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/mihir965/Documents/Developer/counseling-chatroom/cpp_src/buffer.cpp -o CMakeFiles/sockets_cpp.dir/cpp_src/buffer.cpp.s
 
 # Object files for target sockets_cpp
 sockets_cpp_OBJECTS = \
 "CMakeFiles/sockets_cpp.dir/cpp_src/socket.cpp.o" \
-"CMakeFiles/sockets_cpp.dir/cpp_src/server_utils.cpp.o"
+"CMakeFiles/sockets_cpp.dir/cpp_src/server_utils.cpp.o" \
+"CMakeFiles/sockets_cpp.dir/cpp_src/buffer.cpp.o"
 
 # External object files for target sockets_cpp
 sockets_cpp_EXTERNAL_OBJECTS =
 
 libsockets_cpp.a: CMakeFiles/sockets_cpp.dir/cpp_src/socket.cpp.o
 libsockets_cpp.a: CMakeFiles/sockets_cpp.dir/cpp_src/server_utils.cpp.o
+libsockets_cpp.a: CMakeFiles/sockets_cpp.dir/cpp_src/buffer.cpp.o
 libsockets_cpp.a: CMakeFiles/sockets_cpp.dir/build.make
 libsockets_cpp.a: CMakeFiles/sockets_cpp.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/mihir/Documents/Developer/counseling-chatroom/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking CXX static library libsockets_cpp.a"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/mihir965/Documents/Developer/counseling-chatroom/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Linking CXX static library libsockets_cpp.a"
 	$(CMAKE_COMMAND) -P CMakeFiles/sockets_cpp.dir/cmake_clean_target.cmake
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/sockets_cpp.dir/link.txt --verbose=$(VERBOSE)
 
@@ -125,6 +141,6 @@ CMakeFiles/sockets_cpp.dir/clean:
 .PHONY : CMakeFiles/sockets_cpp.dir/clean
 
 CMakeFiles/sockets_cpp.dir/depend:
-	cd /home/mihir/Documents/Developer/counseling-chatroom/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/mihir/Documents/Developer/counseling-chatroom /home/mihir/Documents/Developer/counseling-chatroom /home/mihir/Documents/Developer/counseling-chatroom/build /home/mihir/Documents/Developer/counseling-chatroom/build /home/mihir/Documents/Developer/counseling-chatroom/build/CMakeFiles/sockets_cpp.dir/DependInfo.cmake "--color=$(COLOR)" sockets_cpp
+	cd /home/mihir965/Documents/Developer/counseling-chatroom/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/mihir965/Documents/Developer/counseling-chatroom /home/mihir965/Documents/Developer/counseling-chatroom /home/mihir965/Documents/Developer/counseling-chatroom/build /home/mihir965/Documents/Developer/counseling-chatroom/build /home/mihir965/Documents/Developer/counseling-chatroom/build/CMakeFiles/sockets_cpp.dir/DependInfo.cmake "--color=$(COLOR)" sockets_cpp
 .PHONY : CMakeFiles/sockets_cpp.dir/depend
 
