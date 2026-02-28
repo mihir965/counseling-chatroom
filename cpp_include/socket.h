@@ -2,6 +2,7 @@
 #include <fcntl.h>
 #include <sys/socket.h>
 #include <unistd.h>
+#include <utility>
 
 // Keeping code organized with namespaces
 namespace counsel {
@@ -17,6 +18,11 @@ namespace counsel {
         // This is a wrapper function over the sys call of socket()
         Socket(int domain, int type, int protocol = 0);
         ~Socket();
+
+        // This is a constructor for testing which will allow us to create UNIX
+        // sockets, private fds that constitute a pipe and allow us to simulate
+        // two different computers in a network
+        static std::pair<Socket, Socket> make_pair();
 
         // Delete copy (preventing double-close bug)
         Socket(const Socket &) = delete; // Says that don't allow this operation

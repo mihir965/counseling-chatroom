@@ -19,6 +19,8 @@ add_library(sockets_cpp
     cpp_src/socket.cpp
     cpp_src/server_utils.cpp
     cpp_src/buffer.cpp
+    cpp_src/client_state.cpp
+    cpp_src/server.cpp
 )
 
 # Main server executable (for now, just a test)

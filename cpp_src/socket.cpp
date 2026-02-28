@@ -48,6 +48,13 @@ namespace counsel {
         return *this;
     }
 
+    // The definition of the make_pair function for testing
+    std::pair<Socket, Socket> Socket::make_pair() {
+        int fds[2];
+        socketpair(AF_UNIX, SOCK_STREAM, 0, fds);
+        return {Socket(fds[0]), Socket(fds[1])};
+    }
+
     int Socket::fd() const { return fd_; }
 
     void Socket::bind(const sockaddr *addr, socklen_t addrlen) {
