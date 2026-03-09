@@ -88,4 +88,8 @@ namespace counsel {
         }
     }
 
+    void ClientState::set_username(std::string username) {
+        username_ = username;
+    }
+
 } // namespace counsel

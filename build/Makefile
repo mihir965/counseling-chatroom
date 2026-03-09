@@ -166,6 +166,30 @@ cpp_src/buffer.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/sockets_cpp.dir/build.make CMakeFiles/sockets_cpp.dir/cpp_src/buffer.cpp.s
 .PHONY : cpp_src/buffer.cpp.s
 
+cpp_src/client_state.o: cpp_src/client_state.cpp.o
+.PHONY : cpp_src/client_state.o
+
+# target to build an object file
+cpp_src/client_state.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sockets_cpp.dir/build.make CMakeFiles/sockets_cpp.dir/cpp_src/client_state.cpp.o
+.PHONY : cpp_src/client_state.cpp.o
+
+cpp_src/client_state.i: cpp_src/client_state.cpp.i
+.PHONY : cpp_src/client_state.i
+
+# target to preprocess a source file
+cpp_src/client_state.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sockets_cpp.dir/build.make CMakeFiles/sockets_cpp.dir/cpp_src/client_state.cpp.i
+.PHONY : cpp_src/client_state.cpp.i
+
+cpp_src/client_state.s: cpp_src/client_state.cpp.s
+.PHONY : cpp_src/client_state.s
+
+# target to generate assembly for a file
+cpp_src/client_state.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sockets_cpp.dir/build.make CMakeFiles/sockets_cpp.dir/cpp_src/client_state.cpp.s
+.PHONY : cpp_src/client_state.cpp.s
+
 cpp_src/main.o: cpp_src/main.cpp.o
 .PHONY : cpp_src/main.o
 
@@ -189,6 +213,30 @@ cpp_src/main.s: cpp_src/main.cpp.s
 cpp_src/main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/counsel_server_cpp.dir/build.make CMakeFiles/counsel_server_cpp.dir/cpp_src/main.cpp.s
 .PHONY : cpp_src/main.cpp.s
+
+cpp_src/server.o: cpp_src/server.cpp.o
+.PHONY : cpp_src/server.o
+
+# target to build an object file
+cpp_src/server.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sockets_cpp.dir/build.make CMakeFiles/sockets_cpp.dir/cpp_src/server.cpp.o
+.PHONY : cpp_src/server.cpp.o
+
+cpp_src/server.i: cpp_src/server.cpp.i
+.PHONY : cpp_src/server.i
+
+# target to preprocess a source file
+cpp_src/server.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sockets_cpp.dir/build.make CMakeFiles/sockets_cpp.dir/cpp_src/server.cpp.i
+.PHONY : cpp_src/server.cpp.i
+
+cpp_src/server.s: cpp_src/server.cpp.s
+.PHONY : cpp_src/server.s
+
+# target to generate assembly for a file
+cpp_src/server.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sockets_cpp.dir/build.make CMakeFiles/sockets_cpp.dir/cpp_src/server.cpp.s
+.PHONY : cpp_src/server.cpp.s
 
 cpp_src/server_utils.o: cpp_src/server_utils.cpp.o
 .PHONY : cpp_src/server_utils.o
@@ -251,9 +299,15 @@ help:
 	@echo "... cpp_src/buffer.o"
 	@echo "... cpp_src/buffer.i"
 	@echo "... cpp_src/buffer.s"
+	@echo "... cpp_src/client_state.o"
+	@echo "... cpp_src/client_state.i"
+	@echo "... cpp_src/client_state.s"
 	@echo "... cpp_src/main.o"
 	@echo "... cpp_src/main.i"
 	@echo "... cpp_src/main.s"
+	@echo "... cpp_src/server.o"
+	@echo "... cpp_src/server.i"
+	@echo "... cpp_src/server.s"
 	@echo "... cpp_src/server_utils.o"
 	@echo "... cpp_src/server_utils.i"
 	@echo "... cpp_src/server_utils.s"

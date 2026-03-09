@@ -107,6 +107,10 @@ namespace counsel {
             return;
         ClientState &peer_state = *it->second;
         counsel::FdStatus peer_status = peer_state.on_readable(epoll_fd_);
+
+        // check for a command
+        parse_and_dispatch(peer_state);
+
         struct epoll_event event = {0};
         event.data.fd = peer_state.fd();
         if (peer_status.want_read)
@@ -149,4 +153,78 @@ namespace counsel {
         }
     }
 
+    void Server::parse_and_dispatch(ClientState &client) {
+        while (1) {
+            auto maybe_msg = client.recv_buf().extract_until('\n');
+            if (!maybe_msg)
+                break;
+
+            // We get a vector<uint8_t> from extract_until
+            std::string raw(maybe_msg->begin(), maybe_msg->end());
+
+            nlohmann::json msg = nlohmann::json::parse(raw, nullptr, false);
+            if (msg.is_discarded()) {
+                printf("[PARSE] failed\n");
+                break;
+            }
+
+            if (!msg.contains("type") || !msg["type"].is_string()) {
+                printf("[PARSE WARN] No type field in message!");
+                continue;
+            }
+
+            std::string type = msg["type"];
+
+            if (type == "set_username")
+                handle_set_username(client, msg);
+            else if (type == "create_room")
+                handle_create_room(client, msg);
+            else if (type == "join_room")
+                handle_join_room(client, msg);
+            else if (type == "message")
+                handle_message(client, msg);
+            else if (type == "leave_room")
+                handle_leave_room(client, msg);
+            else
+                printf("[PARSE ERROR] Unknown type detected!\n");
+        }
+    }
+
+    void Server::handle_set_username(ClientState &client,
+                                     const nlohmann::json &msg) {
+        if (!msg.contains("username")) {
+            printf("[PARSE]: msg does not contain username\n");
+            return;
+        }
+        client.set_username(msg["username"]);
+        return;
+    }
+
+    void Server::handle_create_room(ClientState &client,
+                                    const nlohmann::json &msg) {
+        if (!msg.contains("room_name")) {
+            printf("[PARSE]: create_room requires a room_name\n");
+            return;
+        }
+        if (!msg.contains("room_type")) {
+            printf("[PARSE]: create_room requires a room_type\n");
+            return;
+        }
+
+        std::string type_str = msg["room_type"];
+        RoomType room_type;
+        if (type_str == "solo")
+            room_type = RoomType::Solo;
+        else if (type_str == "couples")
+            room_type = RoomType::Couples;
+        else if (type_str == "group")
+            room_type = RoomType::Group;
+        else {
+            send_response(
+                client, {{"type", "error"}, {"message", "invalid room_type"}});
+        }
+
+        auto room = std::make_unique<Room>(room_type, client.fd());
+        room_map_[room->token()] = std::move(room);
+    }
 } // namespace counsel

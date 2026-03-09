@@ -42,5 +42,8 @@ namespace counsel {
         FdStatus on_readable(int epoll_fd);
         FdStatus on_writeable(int epoll_fd);
         void disconnect(int epoll_fd, const char *reason);
+
+        // Setters
+        void set_username(std::string username);
     };
 } // namespace counsel

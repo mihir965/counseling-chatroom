@@ -88,12 +88,12 @@ clean: CMakeFiles/counsel_server_cpp.dir/clean
 CMakeFiles/sockets_cpp.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/sockets_cpp.dir/build.make CMakeFiles/sockets_cpp.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/sockets_cpp.dir/build.make CMakeFiles/sockets_cpp.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/mihir965/Documents/Developer/counseling-chatroom/build/CMakeFiles --progress-num=3,4,5,6 "Built target sockets_cpp"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/mihir965/Documents/Developer/counseling-chatroom/build/CMakeFiles --progress-num=3,4,5,6,7,8 "Built target sockets_cpp"
 .PHONY : CMakeFiles/sockets_cpp.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/sockets_cpp.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/mihir965/Documents/Developer/counseling-chatroom/build/CMakeFiles 4
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/mihir965/Documents/Developer/counseling-chatroom/build/CMakeFiles 6
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/sockets_cpp.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/mihir965/Documents/Developer/counseling-chatroom/build/CMakeFiles 0
 .PHONY : CMakeFiles/sockets_cpp.dir/rule
@@ -105,7 +105,7 @@ sockets_cpp: CMakeFiles/sockets_cpp.dir/rule
 # codegen rule for target.
 CMakeFiles/sockets_cpp.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/sockets_cpp.dir/build.make CMakeFiles/sockets_cpp.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/mihir965/Documents/Developer/counseling-chatroom/build/CMakeFiles --progress-num=3,4,5,6 "Finished codegen for target sockets_cpp"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/mihir965/Documents/Developer/counseling-chatroom/build/CMakeFiles --progress-num=3,4,5,6,7,8 "Finished codegen for target sockets_cpp"
 .PHONY : CMakeFiles/sockets_cpp.dir/codegen
 
 # clean rule for target.
@@ -125,7 +125,7 @@ CMakeFiles/counsel_server_cpp.dir/all: CMakeFiles/sockets_cpp.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/counsel_server_cpp.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/mihir965/Documents/Developer/counseling-chatroom/build/CMakeFiles 6
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/mihir965/Documents/Developer/counseling-chatroom/build/CMakeFiles 8
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/counsel_server_cpp.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/mihir965/Documents/Developer/counseling-chatroom/build/CMakeFiles 0
 .PHONY : CMakeFiles/counsel_server_cpp.dir/rule

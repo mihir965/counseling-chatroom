@@ -21,6 +21,7 @@ add_library(sockets_cpp
     cpp_src/buffer.cpp
     cpp_src/client_state.cpp
     cpp_src/server.cpp
+    cpp_src/room.cpp
 )
 
 # Main server executable (for now, just a test)

@@ -114,11 +114,41 @@ CMakeFiles/sockets_cpp.dir/cpp_src/buffer.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/sockets_cpp.dir/cpp_src/buffer.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/mihir965/Documents/Developer/counseling-chatroom/cpp_src/buffer.cpp -o CMakeFiles/sockets_cpp.dir/cpp_src/buffer.cpp.s
 
+CMakeFiles/sockets_cpp.dir/cpp_src/client_state.cpp.o: CMakeFiles/sockets_cpp.dir/flags.make
+CMakeFiles/sockets_cpp.dir/cpp_src/client_state.cpp.o: /home/mihir965/Documents/Developer/counseling-chatroom/cpp_src/client_state.cpp
+CMakeFiles/sockets_cpp.dir/cpp_src/client_state.cpp.o: CMakeFiles/sockets_cpp.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/mihir965/Documents/Developer/counseling-chatroom/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/sockets_cpp.dir/cpp_src/client_state.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/sockets_cpp.dir/cpp_src/client_state.cpp.o -MF CMakeFiles/sockets_cpp.dir/cpp_src/client_state.cpp.o.d -o CMakeFiles/sockets_cpp.dir/cpp_src/client_state.cpp.o -c /home/mihir965/Documents/Developer/counseling-chatroom/cpp_src/client_state.cpp
+
+CMakeFiles/sockets_cpp.dir/cpp_src/client_state.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/sockets_cpp.dir/cpp_src/client_state.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/mihir965/Documents/Developer/counseling-chatroom/cpp_src/client_state.cpp > CMakeFiles/sockets_cpp.dir/cpp_src/client_state.cpp.i
+
+CMakeFiles/sockets_cpp.dir/cpp_src/client_state.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/sockets_cpp.dir/cpp_src/client_state.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/mihir965/Documents/Developer/counseling-chatroom/cpp_src/client_state.cpp -o CMakeFiles/sockets_cpp.dir/cpp_src/client_state.cpp.s
+
+CMakeFiles/sockets_cpp.dir/cpp_src/server.cpp.o: CMakeFiles/sockets_cpp.dir/flags.make
+CMakeFiles/sockets_cpp.dir/cpp_src/server.cpp.o: /home/mihir965/Documents/Developer/counseling-chatroom/cpp_src/server.cpp
+CMakeFiles/sockets_cpp.dir/cpp_src/server.cpp.o: CMakeFiles/sockets_cpp.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/mihir965/Documents/Developer/counseling-chatroom/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/sockets_cpp.dir/cpp_src/server.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/sockets_cpp.dir/cpp_src/server.cpp.o -MF CMakeFiles/sockets_cpp.dir/cpp_src/server.cpp.o.d -o CMakeFiles/sockets_cpp.dir/cpp_src/server.cpp.o -c /home/mihir965/Documents/Developer/counseling-chatroom/cpp_src/server.cpp
+
+CMakeFiles/sockets_cpp.dir/cpp_src/server.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/sockets_cpp.dir/cpp_src/server.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/mihir965/Documents/Developer/counseling-chatroom/cpp_src/server.cpp > CMakeFiles/sockets_cpp.dir/cpp_src/server.cpp.i
+
+CMakeFiles/sockets_cpp.dir/cpp_src/server.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/sockets_cpp.dir/cpp_src/server.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/mihir965/Documents/Developer/counseling-chatroom/cpp_src/server.cpp -o CMakeFiles/sockets_cpp.dir/cpp_src/server.cpp.s
+
 # Object files for target sockets_cpp
 sockets_cpp_OBJECTS = \
 "CMakeFiles/sockets_cpp.dir/cpp_src/socket.cpp.o" \
 "CMakeFiles/sockets_cpp.dir/cpp_src/server_utils.cpp.o" \
-"CMakeFiles/sockets_cpp.dir/cpp_src/buffer.cpp.o"
+"CMakeFiles/sockets_cpp.dir/cpp_src/buffer.cpp.o" \
+"CMakeFiles/sockets_cpp.dir/cpp_src/client_state.cpp.o" \
+"CMakeFiles/sockets_cpp.dir/cpp_src/server.cpp.o"
 
 # External object files for target sockets_cpp
 sockets_cpp_EXTERNAL_OBJECTS =
@@ -126,9 +156,11 @@ sockets_cpp_EXTERNAL_OBJECTS =
 libsockets_cpp.a: CMakeFiles/sockets_cpp.dir/cpp_src/socket.cpp.o
 libsockets_cpp.a: CMakeFiles/sockets_cpp.dir/cpp_src/server_utils.cpp.o
 libsockets_cpp.a: CMakeFiles/sockets_cpp.dir/cpp_src/buffer.cpp.o
+libsockets_cpp.a: CMakeFiles/sockets_cpp.dir/cpp_src/client_state.cpp.o
+libsockets_cpp.a: CMakeFiles/sockets_cpp.dir/cpp_src/server.cpp.o
 libsockets_cpp.a: CMakeFiles/sockets_cpp.dir/build.make
 libsockets_cpp.a: CMakeFiles/sockets_cpp.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/mihir965/Documents/Developer/counseling-chatroom/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Linking CXX static library libsockets_cpp.a"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/mihir965/Documents/Developer/counseling-chatroom/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Linking CXX static library libsockets_cpp.a"
 	$(CMAKE_COMMAND) -P CMakeFiles/sockets_cpp.dir/cmake_clean_target.cmake
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/sockets_cpp.dir/link.txt --verbose=$(VERBOSE)
 
